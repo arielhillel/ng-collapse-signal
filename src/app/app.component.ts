@@ -25,14 +25,15 @@ export class AppComponent {
     }
 
     toggle() {
-        this.expanded.set(!this.expanded());
+        this.expanded.update(v => !v);
     }
 
     addItem() {
-        this.items.set([...this.items(), 'עוד פריט']);
+        this.items.update(items => [...items, 'עוד פריט']);
     }
 
     removeItem() {
-        this.items.set(this.items().slice(0, -1));
+        this.items.update(items => items.slice(0, -1));
     }
+    
 }
