@@ -1,34 +1,175 @@
+$color-main: #667eea;
+$color-secondary: #764ba2;
+$color-accent: #ff6b6b;
+$color-green: #38a169;
+$color-orange: #ee5a24;
+$color-bg: #f5f7fa;
+$color-bg2: #c3cfe2;
+$radius: 24px;
+$transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+
+.actions {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+
+    button {
+        background: linear-gradient(145deg, $color-main, $color-secondary);
+        color: #fff;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3),
+            0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: $transition;
+        position: relative;
+        overflow: hidden;
+
+        // אפקט זוהר
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: $transition;
+            opacity: 0;
+        }
+
+        &:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 20px 45px rgba(102, 126, 234, 0.4),
+                0 10px 25px rgba(0, 0, 0, 0.15);
+
+            &::before {
+                opacity: 1;
+                animation: shimmer 0.6s ease-out;
+            }
+        }
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
 .rows {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: 2em auto;
-  max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
 .row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 0.5em;
-  /* אם תרצה גבול מסביב לכל שורה */
-  /* border-bottom: 1px solid #eee; */
+    display: flex;
+    gap: 2rem;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: $radius;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08),
+        0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: $transition;
+    position: relative;
+    overflow-x: auto;
+
+    // גבול מנצנץ עדין
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: $radius;
+        padding: 2px;
+        background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        opacity: 0;
+        transition: $transition;
+    }
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12),
+            0 10px 25px rgba(0, 0, 0, 0.08);
+
+        &::before {
+            opacity: 1;
+        }
+    }
 }
 
 .add-zone-btn {
-  align-self: stretch;
-  height: 48px;
-  margin-right: 8px;
-  background: #4d77ff;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
+    min-width: 140px;
+    min-height: 100px;
+    align-self: stretch;
+    flex-shrink: 0;
+    background: linear-gradient(145deg, $color-accent, $color-orange);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: $transition;
+    box-shadow: 0 12px 30px rgba(255, 107, 107, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+
+    // אייקון פלוס מותאם
+    &::after {
+        content: '+';
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-left: 0.5rem;
+        transition: $transition;
+    }
+
+    &:hover {
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 18px 40px rgba(255, 107, 107, 0.3),
+            0 8px 20px rgba(0, 0, 0, 0.15);
+
+        &::after {
+            transform: rotate(180deg);
+        }
+    }
 }
-.add-zone-btn:hover {
-  background: #3553b2;
+
+@media (max-width: 768px) {
+    :host {
+        padding: 2rem 0.5rem;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .add-zone-btn {
+        min-height: 70px;
+    }
 }
