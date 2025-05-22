@@ -1,0 +1,21 @@
+<div class="zone">
+    <div class="zone-header">
+        <div class="zone-title">אזור דינמי</div>
+        <button (click)="toggle()">
+            {{ expanded() ? 'הסתר' : 'הצג' }}
+        </button>
+    </div>
+    <div class="zone-content animated" [style.height.px]="expanded() ? height() : 0">
+        <div #contentRows>
+            @for (item of items(); track $index) {
+            <div class="item">
+                {{ item }}
+            </div>
+            }
+        </div>
+    </div>
+    <div class="actions">
+        <button (click)="addItem()">הוסף פריט</button>
+        <button (click)="removeItem()" [disabled]="items().length === 0">הסר פריט</button>
+    </div>
+</div>

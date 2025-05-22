@@ -1,21 +1,17 @@
-<div class="zone">
-    <div class="zone-header">
-        <div class="zone-title">אזור דינמי</div>
-        <button (click)="toggle()">
-            {{ expanded() ? 'הסתר' : 'הצג' }}
-        </button>
+<div class="actions">
+  <button (click)="addRow()">הוסף שורה</button>
+</div>
+
+<div class="rows">
+  @for (row of rows(); track row.id; let rowIndex = $index) {
+    <div class="row">
+      @for (zone of row.zones; track zone.id) {
+        <app-zone
+          [height]="rowMaxHeight(row)"
+          (zoneHeightChange)="updateZoneHeight(zone.id, $event)">
+        </app-zone>
+      }
+      <button class="add-zone-btn" (click)="addZone(rowIndex)">הוסף זון</button>
     </div>
-    <div class="zone-content animated" [style.height.px]="expanded() ? contentHeight() : 0">
-        <div #contentRows>
-            @for (item of items(); track $index) {
-            <div class="item">
-                {{ item }}
-            </div>
-            }
-        </div>
-    </div>
-    <div class="actions">
-        <button (click)="addItem()">הוסף פריט</button>
-        <button (click)="removeItem()" [disabled]="items().length === 0">הסר פריט</button>
-    </div>
+  }
 </div>

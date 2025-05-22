@@ -1,39 +1,54 @@
-import { Component, effect, ElementRef, signal, Signal, viewChild } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { ZoneComponent } from './components/zone/zone.component';
+
+interface ZoneData {
+  id: string;
+}
+
+interface RowData {
+  id: string;
+  zones: ZoneData[];
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  imports: [ZoneComponent],
+  standalone: true
 })
 export class AppComponent {
-    expanded = signal(true);
-    items = signal(['פריט א', 'פריט ב', 'פריט ג']);
+  rows = signal<RowData[]>([
+    { id: this.uid(), zones: [{ id: this.uid() }, { id: this.uid() }] }
+  ]);
 
-    contentRows: Signal<ElementRef> = viewChild.required<ElementRef>('contentRows');
+  zoneHeights = signal<Record<string, number>>({});
 
-    contentHeight = signal(0);
+  updateZoneHeight = (zoneId: string, height: number) => {
+    this.zoneHeights.update(prev => ({ ...prev, [zoneId]: height }));
+  };
 
-    constructor() {
-        effect(() => {
-            this.items();
-            requestAnimationFrame(() => {
-                if (this.contentRows()) {
-                    this.contentHeight.set(this.contentRows().nativeElement.scrollHeight);
-                }
-            });
-        });
-    }
+  rowMaxHeight = (row: RowData) => {
+    const heights = row.zones.map(z => this.zoneHeights()[z.id] || 0);
+    return Math.max(...heights, 0);
+  };
 
-    toggle() {
-        this.expanded.update(v => !v);
-    }
+  addRow() {
+    this.rows.update(rows => [...rows, { id: this.uid(), zones: [{ id: this.uid() }] }]);
+  }
 
-    addItem() {
-        this.items.update(items => [...items, 'עוד פריט']);
-    }
+  addZone(rowIndex: number) {
+    this.rows.update(rows => {
+      const updated = [...rows];
+      updated[rowIndex] = {
+        ...updated[rowIndex],
+        zones: [...updated[rowIndex].zones, { id: this.uid() }]
+      };
+      return updated;
+    });
+  }
 
-    removeItem() {
-        this.items.update(items => items.slice(0, -1));
-    }
-    
+  uid() {
+    return Math.random().toString(36).substring(2, 10) + Date.now();
+  }
 }
