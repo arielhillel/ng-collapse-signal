@@ -1,50 +1,54 @@
-import { Component, effect, ElementRef, input, output, signal, Signal, viewChild } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { AfterViewInit, Component, effect, ElementRef, input, output, signal, Signal, viewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-zone',
-  templateUrl: './zone.component.html',
-  styleUrl: './zone.component.scss'
+    selector: 'app-zone',
+    templateUrl: './zone.component.html',
+    styleUrl: './zone.component.scss',
+    imports: [NgClass]
 })
-export class ZoneComponent {
-  height = input<number>();
-  zoneHeightChange = output<number>();
-  expanded = signal(true);
-  items = signal(['פריט א', 'פריט ב', 'פריט ג']);
+export class ZoneComponent implements AfterViewInit {
+    height = input<number>();
+    zoneHeightChange = output<number>();
+    expanded = signal(true);
+    items = signal(['פריט א', 'פריט ב', 'פריט ג']);
+    wasInitialized = signal<boolean>(false);
 
-  contentRows: Signal<ElementRef> = viewChild.required<ElementRef>('contentRows');
+    contentRows: Signal<ElementRef> = viewChild.required<ElementRef>('contentRows');
 
-  contentHeight = signal(0);
+    contentHeight = signal(0);
 
-  constructor() {
-    effect(() => {
-      // נטר גם את expanded
-      const isOpen = this.expanded();
-      this.items(); // ריאקטיביות ל-items
+    constructor() {
+        effect(() => {
+            const isOpen = this.expanded();
+            this.items();
 
-      requestAnimationFrame(() => {
-        if (this.contentRows()) {
-          this.contentHeight.set(this.contentRows().nativeElement.scrollHeight);
-          // מעדכן גובה לאבא רק אם פתוח
-          if (isOpen) {
-            this.zoneHeightChange.emit(this.contentHeight());
-          } else {
-            this.zoneHeightChange.emit(0);
-          }
-        }
-      });
-    });
-  }
+            requestAnimationFrame(() => {
+                if (this.contentRows()) {
+                    this.contentHeight.set(this.contentRows().nativeElement.scrollHeight);
+                    if (isOpen) {
+                        this.zoneHeightChange.emit(this.contentHeight());
+                    } else {
+                        this.zoneHeightChange.emit(0);
+                    }
+                }
+            });
+        });
+    }
+    
+    ngAfterViewInit(): void {
+        setTimeout(() => this.wasInitialized.set(true));
+    }
 
+    toggle() {
+        this.expanded.update(v => !v);
+    }
 
-  toggle() {
-    this.expanded.update(v => !v);
-  }
+    addItem() {
+        this.items.update(items => [...items, 'עוד פריט']);
+    }
 
-  addItem() {
-    this.items.update(items => [...items, 'עוד פריט']);
-  }
-
-  removeItem() {
-    this.items.update(items => items.slice(0, -1));
-  }
+    removeItem() {
+        this.items.update(items => items.slice(0, -1));
+    }
 }

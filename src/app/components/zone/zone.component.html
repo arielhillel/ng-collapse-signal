@@ -5,7 +5,7 @@
             {{ expanded() ? 'הסתר' : 'הצג' }}
         </button>
     </div>
-    <div class="zone-content animated" [style.height.px]="expanded() ? height() : 0">
+    <div [ngClass]="{'animated': wasInitialized()}" class="zone-content" [style.height.px]="expanded() ? height() : 0">
         <div #contentRows>
             @for (item of items(); track $index) {
             <div class="item">

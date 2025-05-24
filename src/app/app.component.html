@@ -1,5 +1,8 @@
 <div class="actions">
-  <button (click)="addRow()">הוסף שורה</button>
+    <button (click)="addRow()">הוסף שורה</button>
+    <button (click)="toggleAllZones()">
+        {{ allZonesOpen() ? 'סגור את כל האזורים' : 'פתח את כל האזורים' }}
+    </button>
 </div>
 
 <div class="rows">
